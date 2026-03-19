@@ -7,51 +7,73 @@ export class Renderer {
     }
 
     draw(world, camera, ecs) {
-        // 1. Clear background
+        // 1. Clear Screen
         this.ctx.fillStyle = CONFIG.COLORS.BG;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Calculate visible bounds (Culling for infinite scale)
-        const startCol = Math.floor(camera.x / CONFIG.TILE_SIZE);
-        const endCol = startCol + Math.ceil(this.canvas.width / CONFIG.TILE_SIZE);
-        const startRow = Math.floor(camera.y / CONFIG.TILE_SIZE);
-        const endRow = startRow + Math.ceil(this.canvas.height / CONFIG.TILE_SIZE);
+        // 2. High-Performance Grid Rendering
+        const offsetX = -(camera.x % CONFIG.TILE_SIZE);
+        const offsetY = -(camera.y % CONFIG.TILE_SIZE);
+        
+        this.ctx.beginPath();
+        for (let x = offsetX; x < this.canvas.width; x += CONFIG.TILE_SIZE) {
+            this.ctx.moveTo(x, 0); this.ctx.lineTo(x, this.canvas.height);
+        }
+        for (let y = offsetY; y < this.canvas.height; y += CONFIG.TILE_SIZE) {
+            this.ctx.moveTo(0, y); this.ctx.lineTo(this.canvas.width, y);
+        }
+        this.ctx.strokeStyle = CONFIG.COLORS.GRID;
+        this.ctx.lineWidth = 1;
+        this.ctx.stroke(); // ONE draw call for the entire grid!
 
-        // 2. Draw Grid & Tiles
-        for (let x = startCol; x <= endCol; x++) {
-            for (let y = startRow; y <= endRow; y++) {
-                const screenX = Math.floor(x * CONFIG.TILE_SIZE - camera.x);
-                const screenY = Math.floor(y * CONFIG.TILE_SIZE - camera.y);
+        // 3. Draw Placed Tiles (Culling applied)
+        const startX = Math.floor(camera.x / CONFIG.TILE_SIZE);
+        const startY = Math.floor(camera.y / CONFIG.TILE_SIZE);
+        const endX = startX + Math.ceil(this.canvas.width / CONFIG.TILE_SIZE);
+        const endY = startY + Math.ceil(this.canvas.height / CONFIG.TILE_SIZE);
 
+        for (let x = startX; x <= endX; x++) {
+            for (let y = startY; y <= endY; y++) {
                 const tile = world.getTile(x, y);
-                
-                // Draw tile if exists
-                if (tile) {
-                    this.ctx.fillStyle = CONFIG.COLORS[tile.toUpperCase()];
-                    this.ctx.fillRect(screenX, screenY, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
-                    
-                    if (tile === 'desk') {
-                         this.ctx.fillStyle = '#6b4423'; // Darker brown for desk detail
-                         this.ctx.fillRect(screenX + 8, screenY + 8, 16, 16);
-                    }
-                }
+                if (!tile) continue;
 
-                // Draw grid lines
-                this.ctx.strokeStyle = CONFIG.COLORS.GRID;
-                this.ctx.strokeRect(screenX, screenY, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+                const screenX = x * CONFIG.TILE_SIZE - camera.x;
+                const screenY = y * CONFIG.TILE_SIZE - camera.y;
+
+                this.ctx.fillStyle = CONFIG.COLORS[tile.toUpperCase()];
+                
+                if (tile === 'wall') {
+                    // Give walls a slight 3D shadow effect
+                    this.ctx.fillRect(screenX, screenY - 8, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE + 8);
+                    this.ctx.fillStyle = 'rgba(255,255,255,0.1)'; // Top highlight
+                    this.ctx.fillRect(screenX, screenY - 8, CONFIG.TILE_SIZE, 4);
+                } else if (tile === 'desk') {
+                    this.ctx.fillRect(screenX + 8, screenY + 8, CONFIG.TILE_SIZE - 16, CONFIG.TILE_SIZE - 16);
+                } else {
+                    this.ctx.fillRect(screenX, screenY, CONFIG.TILE_SIZE, CONFIG.TILE_SIZE);
+                }
             }
         }
 
-        // 3. Draw Entities (Students)
+        // 4. Draw Students with smooth shadows
         ecs.entities.forEach(entity => {
             const screenX = entity.x * CONFIG.TILE_SIZE - camera.x + (CONFIG.TILE_SIZE / 2);
             const screenY = entity.y * CONFIG.TILE_SIZE - camera.y + (CONFIG.TILE_SIZE / 2);
             
+            // Shadow
             this.ctx.beginPath();
-            this.ctx.arc(screenX, screenY, 6, 0, Math.PI * 2);
+            this.ctx.arc(screenX, screenY + 4, 8, 0, Math.PI * 2);
+            this.ctx.fillStyle = 'rgba(0,0,0,0.15)';
+            this.ctx.fill();
+
+            // Body
+            this.ctx.beginPath();
+            this.ctx.arc(screenX, screenY, 8, 0, Math.PI * 2);
             this.ctx.fillStyle = CONFIG.COLORS.STUDENT;
             this.ctx.fill();
-            this.ctx.closePath();
+            this.ctx.strokeStyle = '#2563eb';
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
         });
     }
 }

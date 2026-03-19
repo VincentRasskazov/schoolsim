@@ -12,6 +12,20 @@ const gameState = {
     budget: 10000000
 };
 
+
+// ... imports stay the same ...
+
+function updateUI() {
+    // Format to look like real currency
+    document.getElementById('budget-display').innerText = new Intl.NumberFormat('en-US', {
+        style: 'currency', currency: 'USD', maximumFractionDigits: 0
+    }).format(gameState.budget);
+    
+    document.getElementById('population-display').innerText = ecs.entities.length;
+}
+
+// Inside your input.js handler, call updateUI() after spending money.
+// ... rest of main loop stays the same ...
 // Initialize Engine Systems
 const world = new WorldGrid();
 const camera = new Camera();

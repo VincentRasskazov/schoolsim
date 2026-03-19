@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SchoolSim | Architect Engine</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui-layer">
+        <div class="top-bar">
+            <div class="brand">SCHOOL_SIM <span>v1.0</span></div>
+            <div id="budget-display">$10,000,000</div>
+        </div>
+        
+        <div class="bottom-toolbar" id="toolbar">
+            <button class="tool-btn active" data-tool="pan">Pan Camera</button>
+            <button class="tool-btn" data-tool="floor">Build Floor ($50)</button>
+            <button class="tool-btn" data-tool="wall">Build Wall ($150)</button>
+            <button class="tool-btn" data-tool="desk">Place Desk ($300)</button>
+            <button class="tool-btn" data-tool="student">Admit Student ($500)</button>
+        </div>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>

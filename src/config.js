@@ -1,17 +1,12 @@
 export const CONFIG = {
-    TILE_SIZE: 32,
+    TILE_SIZE: 40, // Slightly larger for better visibility
     COLORS: {
-        BG: '#0a0a0a',
-        GRID: '#1a1a1a',
-        FLOOR: '#22222a',
-        WALL: '#555566',
-        DESK: '#8b5a2b',
-        STUDENT: '#00ffcc'
+        BG: '#f8fafc',
+        GRID: '#e2e8f0', // Very soft grey grid
+        FLOOR: '#cbd5e1',
+        WALL: '#64748b', // Slate wall
+        DESK: '#d97706',
+        STUDENT: '#3b82f6' // Bright blue students
     },
-    COSTS: {
-        floor: 50,
-        wall: 150,
-        desk: 300,
-        student: 500
-    }
+    COSTS: { floor: 50, wall: 150, desk: 300, student: 500 }
 };

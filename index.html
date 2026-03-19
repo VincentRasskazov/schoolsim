@@ -3,25 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SchoolSim | Architect Engine</title>
+    <title>SchoolSim | Pro</title>
     <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <canvas id="gameCanvas"></canvas>
 
     <div id="ui-layer">
-        <div class="top-bar">
-            <div class="brand">SCHOOL_SIM <span>v1.0</span></div>
-            <div id="budget-display">$10,000,000</div>
-        </div>
-        
-        <div class="bottom-toolbar" id="toolbar">
-            <button class="tool-btn active" data-tool="pan">Pan Camera</button>
-            <button class="tool-btn" data-tool="floor">Build Floor ($50)</button>
-            <button class="tool-btn" data-tool="wall">Build Wall ($150)</button>
-            <button class="tool-btn" data-tool="desk">Place Desk ($300)</button>
-            <button class="tool-btn" data-tool="student">Admit Student ($500)</button>
-        </div>
+        <header class="top-hud">
+            <div class="logo-area">
+                <h1>SchoolSim <span>PRO</span></h1>
+            </div>
+            <div class="stats-area">
+                <div class="stat-box">
+                    <span class="label">FUNDS</span>
+                    <span class="value text-green" id="budget-display">$10,000,000</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">STUDENTS</span>
+                    <span class="value" id="population-display">0</span>
+                </div>
+            </div>
+        </header>
+
+        <nav class="build-dock">
+            <button class="tool-btn active" data-tool="pan">
+                <span class="icon">✋</span> Pan
+            </button>
+            <div class="divider"></div>
+            <button class="tool-btn" data-tool="floor">
+                <span class="icon">⬜</span> Floor <span>$50</span>
+            </button>
+            <button class="tool-btn" data-tool="wall">
+                <span class="icon">🧱</span> Wall <span>$150</span>
+            </button>
+            <button class="tool-btn" data-tool="desk">
+                <span class="icon">🪑</span> Desk <span>$300</span>
+            </button>
+            <div class="divider"></div>
+            <button class="tool-btn action-btn" data-tool="student">
+                <span class="icon">👤</span> Admit Student <span>$500</span>
+            </button>
+        </nav>
     </div>
 
     <script type="module" src="src/main.js"></script>
